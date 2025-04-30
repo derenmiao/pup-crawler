@@ -1,4 +1,5 @@
-import {PupCrawler, OpenPageOptions} from 'pup-crawler'
+// example.ts
+import {PupCrawler, CrawlOptions } from 'pup-crawler'
 
 // https://ac.qq.com/Comic/all/page/1
 
@@ -7,7 +8,7 @@ async function example() {
     await crawler.open() // 打开浏览器调试 {headless: false, args: ['--no-sandbox']}
 
     // 章节页面配置
-    const chapterOpt: OpenPageOptions = {
+    const chapterOpt: CrawlOptions = {
         name: 'chapter',
         delayTime: 3000,
         autoScroll: true, // 自动滚动，直到浏览器底部
@@ -27,7 +28,7 @@ async function example() {
     }
 
     // 详情页面配置
-    const detailOpt: OpenPageOptions = {
+    const detailOpt: CrawlOptions = {
         name: 'detail',
         target: {
             waitCss: '.works-intro', // 等待爬取内容加载完成
@@ -52,7 +53,7 @@ async function example() {
     // 爬取1-10页的列表数据
     for await (let page of Array.from({length: 10}, (_, i) => i + 1)) {
         const url = `/Comic/all/page/${page}`
-        await crawler.openPage({
+        await crawler.crawlPage({
             name: 'list',
             url: url,
             target: {

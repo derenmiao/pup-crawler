@@ -1,5 +1,5 @@
 import puppeteer, {Browser, LaunchOptions, Page} from 'puppeteer'
-import type {IProps, OpenPageOptions, Target, obj} from './types.d.ts'
+import type {IProps, CrawlOptions, Target, obj} from './types.d.ts'
 
 // 把对象数组合成对象
 function formatArrToObj (result: obj[]): obj {
@@ -57,14 +57,14 @@ class PupCrawler {
 
   /** 循环获取 */
   async loopRun(result: obj, target: Target) {
-    type TargetItem = {loopOpt: OpenPageOptions, label: string}
+    type TargetItem = {loopOpt: CrawlOptions, label: string}
     const { loopOpt, label: loopAttr } = target.values?.find((item) => item?.loopOpt) || {} as TargetItem
     if (loopAttr && loopOpt) {
       const links = typeof result[loopAttr] === 'string' ? [result[loopAttr]] : result[loopAttr]
       this.console && console.log('loopOpt =>> ', links)
       const looplist = []
       for await (let link of links) {
-        const loopResult = await this.openPage({ ...loopOpt, url: link })
+        const loopResult = await this.crawlPage({ ...loopOpt, url: link })
         looplist.push(loopResult)
       }
       result[loopAttr] = looplist
@@ -73,7 +73,7 @@ class PupCrawler {
   }
 
   /** 自循环 */
-  async recursionRun(result: obj, options: OpenPageOptions) {
+  async recursionRun(result: obj, options: CrawlOptions) {
     const { target, name, delayTime, recursion } = options
     const { loopKey, loopVals = [] } = recursion || {}
     if (loopKey) {
@@ -83,7 +83,7 @@ class PupCrawler {
       if (links.length > 1) {
         for await (let link of links) {
           // 递归不能要recursion，否则从第一开始, 和callback要处理和返回对象那个一致
-          const loopRes = await this.openPage({ url: link, target, name, delayTime })
+          const loopRes = await this.crawlPage({ url: link, target, name, delayTime })
           if (!loopRes || !Object.keys(loopRes).length) continue
           const tempObj: obj = {}
           loopVals.forEach((attr) => {
@@ -104,8 +104,8 @@ class PupCrawler {
     return result
   }
 
-  /** 爬取页面属性：PipePageOptions */
-  async openPage(params: OpenPageOptions): Promise<obj> {
+  /** 爬取页面属性：CrawlPageOptions */
+  async crawlPage(params: CrawlOptions): Promise<obj> {
     const { name = 'default', url, target, autoScroll=false, autoScrollInterval=500, timeout = 60000, callback, before, after, delayTime = 0 } = params
 
     this.url = url?.includes(this.host) ? url : this.host + url
@@ -216,4 +216,4 @@ class PupCrawler {
   }
 }
 
-export {PupCrawler, OpenPageOptions}
+export { PupCrawler, CrawlOptions }

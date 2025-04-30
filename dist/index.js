@@ -65,7 +65,7 @@ class PupCrawler {
             this.console && console.log('loopOpt =>> ', links);
             const looplist = [];
             for await (let link of links) {
-                const loopResult = await this.openPage({ ...loopOpt, url: link });
+                const loopResult = await this.crawlPage({ ...loopOpt, url: link });
                 looplist.push(loopResult);
             }
             result[loopAttr] = looplist;
@@ -83,7 +83,7 @@ class PupCrawler {
             if (links.length > 1) {
                 for await (let link of links) {
                     // 递归不能要recursion，否则从第一开始, 和callback要处理和返回对象那个一致
-                    const loopRes = await this.openPage({ url: link, target, name, delayTime });
+                    const loopRes = await this.crawlPage({ url: link, target, name, delayTime });
                     if (!loopRes || !Object.keys(loopRes).length)
                         continue;
                     const tempObj = {};
@@ -105,8 +105,8 @@ class PupCrawler {
         }
         return result;
     }
-    /** 爬取页面属性：PipePageOptions */
-    async openPage(params) {
+    /** 爬取页面属性：CrawlPageOptions */
+    async crawlPage(params) {
         const { name = 'default', url, target, autoScroll = false, autoScrollInterval = 500, timeout = 60000, callback, before, after, delayTime = 0 } = params;
         this.url = url?.includes(this.host) ? url : this.host + url;
         // 前置函数

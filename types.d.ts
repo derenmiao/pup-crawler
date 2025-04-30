@@ -18,11 +18,11 @@ export interface Target {
     /** 弱水三千，只取一瓢：配合all=true使用 */
     allIdx?: number
     /** 循环对象 */
-    loopOpt?: OpenPageOptions,
+    loopOpt?: CrawlOptions,
   }>
 }
 
-export interface OpenPageOptions {
+export interface CrawlOptions {
   /** 名 */
   name?: string,
   /** 要爬取的页面地址 */

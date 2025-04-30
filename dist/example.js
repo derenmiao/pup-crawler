@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// import {PupCrawler, OpenPageOptions} from './index'
-// import {PupCrawler, OpenPageOptions} from 'pup-crawler'
-const index_js_1 = require("./dist/index.js");
+// example.ts
+const pup_crawler_1 = require("pup-crawler");
 // https://ac.qq.com/Comic/all/page/1
 async function example() {
-    const crawler = new index_js_1.PupCrawler({ host: 'https://ac.qq.com' });
+    const crawler = new pup_crawler_1.PupCrawler({ host: 'https://ac.qq.com', console: true });
     await crawler.open(); // 打开浏览器调试 {headless: false, args: ['--no-sandbox']}
     // 章节页面配置
     const chapterOpt = {
@@ -51,7 +50,7 @@ async function example() {
     // 爬取1-10页的列表数据
     for await (let page of Array.from({ length: 10 }, (_, i) => i + 1)) {
         const url = `/Comic/all/page/${page}`;
-        await crawler.openPage({
+        await crawler.crawlPage({
             name: 'list',
             url: url,
             target: {

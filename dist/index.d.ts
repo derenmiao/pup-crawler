@@ -1,5 +1,5 @@
 import { Browser, LaunchOptions, Page } from 'puppeteer';
-import type { IProps, OpenPageOptions, Target, obj } from './types.d.ts';
+import type { IProps, CrawlOptions, Target, obj } from './types.d.ts';
 declare class PupCrawler {
     browser: Browser | undefined;
     url: string | undefined;
@@ -16,8 +16,8 @@ declare class PupCrawler {
     /** 循环获取 */
     loopRun(result: obj, target: Target): Promise<obj>;
     /** 自循环 */
-    recursionRun(result: obj, options: OpenPageOptions): Promise<obj>;
-    /** 爬取页面属性：PipePageOptions */
-    openPage(params: OpenPageOptions): Promise<obj>;
+    recursionRun(result: obj, options: CrawlOptions): Promise<obj>;
+    /** 爬取页面属性：CrawlPageOptions */
+    crawlPage(params: CrawlOptions): Promise<obj>;
 }
-export { PupCrawler, OpenPageOptions };
+export { PupCrawler, CrawlOptions };
