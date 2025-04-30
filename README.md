@@ -3,6 +3,9 @@
 这是一个基于puppeteer的简单的爬虫，可以爬取动态、静态加载的网站。
 常用于【列表-详情-内容】系列的网站，比如电影视频等网站。
 
+[github地址](https://github.com/derenmiao/pup-crawler)
+
+
 ### Usage
 
 ```shell
