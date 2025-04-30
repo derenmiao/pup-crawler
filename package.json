@@ -1,0 +1,27 @@
+{
+  "name": "pup-crawler",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node ./example.ts"
+  },
+  "keywords": [
+    "web",
+    "crawler",
+    "puppeteer",
+    "简单爬虫",
+    "浏览器爬虫",
+    "动态爬虫",
+    "异步爬虫"
+  ],
+  "author": "deren",
+  "license": "ISC",
+  "description": "A simple web crawler that extracts data from websites, using Node.js and Puppeteer.",
+  "dependencies": {
+    "puppeteer": "^24.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
