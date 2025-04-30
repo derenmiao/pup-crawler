@@ -115,7 +115,7 @@ class PupCrawler {
 
     const page = await this.browser?.newPage()
     if (!page) return {}
-
+    
     try {
       this.console && console.log(`${name} =>> `, this.url)
       await page.goto(this.url, { timeout: timeout, waitUntil: 'networkidle2' })
@@ -130,7 +130,9 @@ class PupCrawler {
       if (autoScroll) {
         await this.scorllToBottom(page, autoScrollInterval)
       }
-     
+
+      // 打开page里面的console日志
+      // page.on('console', msg => console.log('PAGE LOG:', msg.text()))
       const result: Array<obj>  = await page.evaluate(({ values = [] }) => {
         if (!values.length) return []
         return values.map(({ css, all = false, attr, label, allIdx }) => {

@@ -51,8 +51,8 @@ target: {
         {label: 'val4', attr: 'href', css: '.item > a', all: true, allIdx: 3}, 
         // 5. 实现 document.querySelectorAll('.item > a')[3].querySelector('.sub-item > a') 功能。 加 all: true,  allIdx: 3
         {label: 'val5', attr: 'href', css: ['.item > a', '.sub-item > a'], all: true, allIdx: 3}, 
-        // 6. 获取 window.location.href 值, 不用加属性,需要从window对象开始获取
-        {label: 'val6',  css: 'window.location.href'}, 
+        // 6. 获取 window.location.href 值, 不用加css, 需要从window对象开始获取
+        {label: 'val6',  attr: 'window.location.href'}, 
         // 7. 获取多个a标签的href值，且循环遍历。 加 loopOpt: CrawlOptions; loopOpt执行完的值是下一个target.values的对象，会赋给label，
         {label: 'val7', attr: 'href', css: '.list-item > ul > li > a', all: true, loopOpt: NextPageOpt}, 
         ...
