@@ -16,7 +16,7 @@ import { PupCrawler } from 'pup-crawler'
 (async () => {
     const crawler = new PupCrawler()
     await crawler.open()
-    crawler.crawlPage({
+    await crawler.crawlPage({
         name: 'list',
         url: 'https://www.example.com/list',
         target: {
@@ -34,76 +34,37 @@ import { PupCrawler } from 'pup-crawler'
 
 ```
 
-复杂用法：以腾讯动漫为例，爬取列表和详情和内容页。
+复杂用法：详细看example.ts文件，那以腾讯动漫为例，爬取列表和详情和内容页。
 ```typescript
-// example.ts
-import {PupCrawler, CrawlOptions} from 'pup-crawler'
-// https://ac.qq.com/Comic/all/page/1
-async function example() {
-    const crawler = new PupCrawler({ host: 'https://ac.qq.com', console: true })
-    await crawler.open() // 打开浏览器调试 {headless: false, args: ['--no-sandbox']}
-
-    // 章节页面配置
-    const chapterOpt: CrawlOptions = {
-        name: 'chapter',
-        delayTime: 3000,
-        autoScroll: true, // 自动滚动，直到浏览器底部
-        autoScrollInterval: 1000, // 自动滚动的间隔时间
-        target: {
-            values: [
-                {label: 'images', attr: 'src', css: '#comicContain > li > img', all: true}, // 内容图
-                {label: 'name', css: 'span.title-comicHeading'}
-            ]
-        },
-        callback: (result: any) => {
-            const {name, images} = result
-            const data = {name, values: images}
-            console.log('chapter info =>>', data)
-            return data
-        }
-    }
-
-    // 详情页面配置
-    const detailOpt: CrawlOptions = {
-        name: 'detail',
-        target: {
-            waitCss: '.works-intro', // 等待爬取内容加载完成
-            values: [
-                {label: 'title', css: '.works-intro-title > strong'}, // 标题
-                {label: 'author', css: 'p.works-intro-digi > span.first > em'}, // 作者
-                {label: 'score', css: 'div.works-score > p > strong.ui-text-orange'}, // 评分
-                {label: 'popularity', css: 'p.works-intro-digi > em > span', all: true, allIdx:0}, // 人气
-                {label: 'collect', css: 'p.works-intro-digi > em > span', all: true, allIdx:1}, // 收藏数
-                {label: 'intro', css: 'p.works-intro-short'}, // 简介
-                {label: 'tags', css: '#tags-show > a', all: true}, // 标签
-                {label: 'cover', attr: 'href', css: 'div.works-cover > a'}, // 封面图
-                {label: 'chapterData', attr: 'href', css: 'ol.works-chapter-list > li > p > span.works-chapter-item > a',  loopOpt: chapterOpt} // 章节数据
-            ]
-        },
-        callback: (result: any) => {
-            console.log('detail info =>>',result)
-            return result
-        }
-    }
-
-    // 爬取1-10页的列表数据
-    for await (let page of Array.from({length: 10}, (_, i) => i + 1)) {
-        const url = `/Comic/all/page/${page}`
-        await crawler.crawlPage({
-            name: 'list',
-            url: url,
-            target: {
-                waitCss: '.ret-main', // 等待爬取内容加载完成
-                values: [
-                    // 以这个节点的href作为详情页的url，循环爬取详情页数据
-                    {label: 'detailData', attr: 'href', css: '.ret-search-list > li >div.ret-works-info > a', all: true, loopOpt: detailOpt}, 
-                ]
-            }
-        })
-    }
-    await crawler.close() // 关闭浏览器
+target: {
+    values: [
+        // 1. 普通获取值, 例如获取 .item > a 中的文本内容。attr默认获取textContent
+        {label: 'val', css: '.item > a'}, 
+        // 2. 获取属性值, 例如获取 .item > a 中的href属性值。attr = getAttribute('xxx')
+        {label: 'val2', attr: 'href', css: '.item > a'}, 
+        // 3. 实现 document.querySelectorAll('.item > a') 功能。 加 all: true=querySelectorAll, false=querySelector
+        {label: 'val3', attr: 'href', css: '.item > a', all: true}, 
+        // 4. 实现 document.querySelectorAll('.item > a')[3] 功能。 加 all: true, allIdx: 3
+        {label: 'val4', attr: 'href', css: '.item > a', all: true, allIdx: 3}, 
+        // 5. 实现 document.querySelectorAll('.item > a')[3].querySelector('.sub-item > a') 功能。 加 all: true,  allIdx: 3
+        {label: 'val5', attr: 'href', css: ['.item > a', '.sub-item > a'], all: true, allIdx: 3}, 
+        // 6. 获取 window.location.href 值, 不用加属性,需要从window对象开始获取
+        {label: 'val6',  css: 'window.location.href'}, 
+        // 7. 获取多个a标签的href值，且循环遍历。 加 loopOpt: CrawlOptions; loopOpt执行完的值是下一个target.values的对象，会赋给label，
+        {label: 'val7', attr: 'href', css: '.list-item > ul > li > a', all: true, loopOpt: NextPageOpt}, 
+        ...
+    ],
+    // 在本类型页面循环，例如获取某个电视剧播放的集数列表的播放源
+    // loopKey：1、从上面values中选循环的label对应的值（一般是all: true的，loopOpt：不再做下一层循环）
+    // loopVals：2、从上面values中选循环的label需要返回的值。比如最后一个页面没必要太多值，只需要val2， val4这两个值
+    recursion: { loopKey: 'playList', loopVals: ['val2', 'val4'] },
+    // 前置函数，返回true则继续执行。常用控制页面爬取，例如数据库检查当前爬取值是否已存在
+    before: () => boolean | Promise<boolean>,
+    // 后置函数，返回true则继续爬取。爬网当前页面配置的values值后执行。
+    after: (obj: object) => boolean | Promise<boolean>,
+    // 回调函数，可以处理格式化后的结果。
+    callback?: (obj: object) => obj | Promise<obj>
 }
-example()
 ```
 
 
