@@ -5,7 +5,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "release": "tsc && npm publish",
     "test": "ts-node ./example.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/你的用户名/你的仓库名.git"
   },
   "keywords": [
     "web",
