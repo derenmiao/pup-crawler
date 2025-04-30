@@ -1,6 +1,6 @@
 {
   "name": "pup-crawler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -25,6 +25,7 @@
   "license": "ISC",
   "description": "A simple web crawler that extracts data from websites, using Node.js and Puppeteer.",
   "dependencies": {
+    "pup-crawler": "^1.0.1",
     "puppeteer": "^24.7.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

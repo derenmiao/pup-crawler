@@ -1,9 +1,9 @@
-import {PupCrawler, OpenPageOptions} from './index'
+import {PupCrawler, OpenPageOptions} from 'pup-crawler'
 
 // https://ac.qq.com/Comic/all/page/1
 
 async function example() {
-    const crawler = new PupCrawler({ host: 'https://ac.qq.com' })
+    const crawler = new PupCrawler({ host: 'https://ac.qq.com', console: true })
     await crawler.open() // 打开浏览器调试 {headless: false, args: ['--no-sandbox']}
 
     // 章节页面配置
